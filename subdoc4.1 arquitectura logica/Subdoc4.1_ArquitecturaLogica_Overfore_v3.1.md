@@ -8,8 +8,8 @@
 | Contenido | a) Esquema de solución. b) Arquitectura lógica: capas, módulos, límites de contexto, responsabilidades e interfaces |
 | Ponderación | 16 % de la evaluación técnica (numeral 4.1 de la pauta) |
 | Documentos que rigen | Bases Administrativas FEP01.26 · Bases Técnicas Transversales FEP02.26 · Bases Técnicas del Caso 01, v1.0 del 18-08-2026 |
-| Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.4 · Registro de reglas de negocio v1.2 · Formulario T-12 v1.2 |
-| Versión | 3.0 — 1 de septiembre de 2026. Tercera emisión: incorpora la vista de seguridad completa (apartado 11), la observabilidad y los niveles de servicio (apartado 12), la capacidad, configuración y despliegue sin interrupción (apartado 13) y los canales y la movilidad (apartado 16); corrige las inconsistencias internas detectadas en la revisión cruzada y alinea las citas de origen con la convención del catálogo y de la matriz. |
+| Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.5 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se redactó este subdocumento. El Formulario T-12 v1.3 es consecuencia de este entregable y no insumo suyo: recoge las declaraciones del apartado 14.1 y las reasignaciones del apartado 15 |
+| Versión | 3.1 — 1 de septiembre de 2026. Tercera emisión, con las correcciones de la revisión cruzada: incorpora la vista de seguridad completa (apartado 11), la observabilidad y los niveles de servicio (apartado 12), la capacidad, configuración y despliegue sin interrupción (apartado 13) y los canales y la movilidad (apartado 16); corrige las inconsistencias internas detectadas en la revisión cruzada y alinea las citas de origen con la convención del catálogo y de la matriz. |
 
 Este subdocumento acredita el Capítulo 2 del documento transversal —RT-02.01 a RT-02.14—, que hasta la v1.2 del Formulario T-12 figuraba en blanco por no existir todavía este entregable, y los requisitos de otros capítulos que enumera el apartado 12.1. No repite el problema, que se desarrolla en el Subdocumento 2, ni el alcance, que se desarrolla en el Subdocumento 3. El emplazamiento físico de cada componente se desarrolla en el Subdocumento 4.2 y el modelo de datos en el Subdocumento 5.
 
@@ -523,7 +523,7 @@ El modelo tiene **una excepción, y la impone el caso**. Durante las 48 horas de
 
 La propiedad que hace aceptable la excepción es que **la verificación no se omite: se difiere y se repite**. Un evento admitido en terreno contra una credencial que el maestro central había revocado se reconcilia igualmente —el hecho ocurrió y RN-30 manda conservarlo—, pero queda marcado, alertado y trazable hasta la aserción con que se admitió. Es la regla de RN-30 aplicada a la identidad.
 
-**Limitación residual que se declara.** La caché de credenciales tiene vigencia máxima de **72 horas**, con margen sobre las 48 comprometidas, y se refresca en cada sincronización. Durante un corte prolongado una revocación no se propaga, de modo que el umbral de quince minutos de SUP-28 se mide sobre operación con enlace y no durante el corte. Los controles compensatorios son tres: la persona cuya habilitación se revoca ya está físicamente dentro del recinto y el control de portería lo sabe; el nodo de borde deja de admitir la credencial al vencer la vigencia de la caché aunque no haya recuperado el enlace; y todo evento admitido en la ventana queda marcado en la reconciliación. Se incorpora como umbral del PROPONENTE al Registro de supuestos, con validación en el corte controlado de 48 horas del apartado 9.2.
+**Limitación residual que se declara.** La caché de credenciales tiene vigencia máxima de **72 horas**, con margen sobre las 48 comprometidas, y se refresca en cada sincronización. Durante un corte prolongado una revocación no se propaga, de modo que el umbral de quince minutos de SUP-28 se mide sobre operación con enlace y no durante el corte. Los controles compensatorios son tres: la persona cuya habilitación se revoca ya está físicamente dentro del recinto y el control de portería lo sabe; el nodo de borde deja de admitir la credencial al vencer la vigencia de la caché aunque no haya recuperado el enlace; y todo evento admitido en la ventana queda marcado en la reconciliación. Queda incorporado al Registro de supuestos v1.5 como **SUP-38**, con validación en el corte controlado de 48 horas del apartado 9.2.
 
 ### 11.2 Modelado de amenazas por componente y por integración (RT-11.02)
 
@@ -749,7 +749,7 @@ Este apartado reúne las decisiones de arquitectura que hacen que el sistema sop
 
 Las capas de aplicación e integración escalan de forma **horizontal y automática**. La decisión propia de este caso es *cómo* se dispara ese escalado.
 
-El peak dimensionante no es aleatorio: es el **cambio de turno**, ocurre dos veces al día a las 08:00 y a las 20:00 conforme a RN-23, dura de 45 a 60 minutos y alcanza 200 transacciones por segundo contra 40 en régimen (SUP-31). Un escalado puramente reactivo llega tarde por construcción: reacciona cuando la métrica ya subió, y para cuando la capacidad está disponible el peak lleva un tercio de su duración transcurrido, justo en la franja en que se abren y cierran mil ochocientas sesiones de operador.
+El peak dimensionante no es aleatorio: es el **cambio de turno**, ocurre dos veces al día a las 08:00 y a las 20:00 conforme a RN-23, dura de 45 a 60 minutos y alcanza 200 transacciones por segundo contra 40 en régimen (SUP-31). Un escalado puramente reactivo llega tarde por construcción: reacciona cuando la métrica ya subió, y para cuando la capacidad está disponible el peak lleva un tercio de su duración transcurrido, justo en la franja en que se cierra y se abre una sesión de operador por cada equipo de la flota que el apartado 10.1 declara.
 
 **Decisión: escalado anticipado por calendario como mecanismo primario, y escalado reactivo como red de seguridad.** La capacidad se provisiona antes de cada cambio de turno, anclada a la definición de turno de RN-23 —que es un parámetro versionado de C-20, no una constante—, y el escalado reactivo cubre lo que el calendario no prevé: una detención programada de planta, una reconciliación masiva tras un corte, un embarque. El tiempo de reacción del mecanismo reactivo se declara y se verifica en las pruebas de carga del Subdocumento 9.
 
@@ -846,9 +846,7 @@ La abstracción de proveedor se aplica en la capa de datos y en la de identidad,
 
 ### 14.1 Requisitos transversales que acredita
 
-Este subdocumento es la sección de la propuesta que acredita, en el Formulario T-12, los requisitos que hasta la v1.2 figuraban en blanco por inexistencia del entregable:
-
-Los requisitos que este subdocumento acredita, con el apartado en que cada uno queda declarado y verificable:
+Este subdocumento es la sección de la propuesta que acredita, en el Formulario T-12, los requisitos de la tabla siguiente, cada uno con el apartado en que queda declarado y verificable. **Cincuenta y siete de ellos figuraban en blanco** por inexistencia de este entregable; **RT-03.13** figuraba como «Cumple parcialmente» y pasa a «Cumple» con el apartado 9.3; y **RT-05.23, RT-05.29 y RT-12.03** ya figuraban «Cumple» en la v1.2, de modo que lo que este subdocumento aporta en ellos es el apartado y el componente que los sostienen, sin alterar la declaración.
 
 | Capítulo transversal | Requisitos que acredita este subdocumento | Apartados |
 |---|---|---|
@@ -909,7 +907,7 @@ Cada apartado cierra con su propia tabla de trazabilidad requisito por requisito
 | Paquetes de la EDT | Informe 2 | Las 228 filas de la matriz de trazabilidad dicen «Se define en el Informe 2». La columna existe vacía |
 | Detalle de emplazamiento, producto y versión de los controles de seguridad, observabilidad e infraestructura | Subdoc. 4.2 | Este subdocumento decide el **modelo y los controles lógicos** de seguridad (apartado 11), observabilidad (12) y capacidad, configuración y despliegue (13). El producto, la versión, el emplazamiento y el dimensionamiento son del 4.2, y sin ellos el numeral 1.5 transversal considera el requisito no acreditado |
 
-**Frontera de alcance frente al Formulario T-12.** La hoja «Pendientes por grupo» del T-12 v1.2 asignó a «Subdoc. 4.1» noventa y siete códigos, incluidos capítulos completos que no son materia de arquitectura lógica. Este subdocumento acredita los cincuenta y dos que sí lo son, según la tabla del apartado 14.1, y **reasigna los cuarenta y cinco restantes con fundamento**, para que ninguno quede huérfano entre entregables. La reasignación se refleja en la versión siguiente del Formulario T-12.
+**Frontera de alcance frente al Formulario T-12.** La hoja «Pendientes por grupo» del T-12 v1.2 asignó a «Subdoc. 4.1» noventa y siete códigos, incluidos capítulos completos que no son materia de arquitectura lógica. Este subdocumento acredita **cincuenta y uno** de ellos, según la tabla del apartado 14.1, y **reasigna cuarenta y cinco con fundamento**, para que ninguno quede huérfano entre entregables. El restante es **RT-03.24**, que no cae en ninguna de las dos categorías: se parte entre ambos entregables por la razón que explica el apartado 14.1 —la calidad de servicio se declara aquí, el estudio de cobertura del rajo en el 4.2— y queda como «Cumple parcialmente». Cincuenta y uno, más cuarenta y cinco, más ese uno, son los noventa y siete. La reasignación se refleja en el Formulario T-12 v1.3.
 
 | Códigos que se reasignan | A qué entregable | Por qué no son arquitectura lógica |
 |---|---|---|
@@ -972,7 +970,7 @@ Se compromete una **interfaz reducida** de C-03, servida por el mismo núcleo y 
 
 Esto importa por la composición del parque: hay **310 vehículos de flota liviana, mayoritariamente de contratistas**, y las personas contratistas no usan dispositivos provistos por el CLIENTE. El hardware de terreno que el CLIENTE adquiere se especifica en el Formulario T-11 conforme al RT-08.10, pero la aplicación no puede suponer que todo dispositivo que la ejecuta salió de esa especificación.
 
-**Umbral definido por el PROPONENTE**, a incorporar al Registro de supuestos: la interfaz reducida sostiene los umbrales de terreno del numeral 9.1 en dispositivos de dos generaciones anteriores a la vigente, con la misma tasa de éxito de lectura de proximidad. Se valida en la marcha blanca de la Etapa 1, sobre el parque real y no sobre el especificado.
+**Umbral definido por el PROPONENTE**, incorporado al Registro de supuestos v1.5 como **SUP-39**: la interfaz reducida sostiene los umbrales de terreno del numeral 9.1 en dispositivos de dos generaciones anteriores a la vigente, con la misma tasa de éxito de lectura de proximidad. Se valida en la marcha blanca de la Etapa 1, sobre el parque real y no sobre el especificado.
 
 ### 16.5 Modo oscuro, personalización e idiomas (RT-13.12)
 
@@ -1044,7 +1042,7 @@ Este apartado no contiene el diagrama: contiene su especificación literal, para
 
 **Bloque externo a la derecha, rotulado «Sistemas del CLIENTE que no se reemplazan»** — ERP corporativo · Despacho de flota · Sistema de gestión de laboratorio · Software de planificación minera · Historiador de proceso, sólo lectura · Tres portales de telemetría · Sistema de control de fatiga.
 
-**Marcas obligatorias en el dibujo:** etiqueta de sentido en cada conector externo, con `sólo lectura` explícito en el historiador; rótulo `ACL` en los siete adaptadores, incluido el de control de fatiga; rótulo `Etapa 2` en C-07, C-13 y C-17.
+**Marcas obligatorias en el dibujo:** etiqueta de sentido en cada conector externo, con `sólo lectura` explícito en el historiador; rótulo `ACL` en los siete adaptadores, incluido el de control de fatiga; rótulo `Etapa 2` en **C-07, C-13, C-17 y C-18**. Los cuatro se rotulan por el peso de la Etapa 2 en la matriz v1.1: C-17 con 11 de 11 requerimientos, C-07 con 7 de 8, C-18 con 5 de 6 y C-13 con 8 de 11. Omitir C-18 contradiría al apartado 5, que declara «C-17 y la mayor parte de C-18 en Etapa 2».
 
 **Las tres capacidades excluidas del Contrato se dibujan como cajas, no como leyenda:** tres rectángulos de trazo discontinuo y relleno neutro, **fuera** del marco del sistema, rotulados `Prorrateo automático del viaje de borde` junto a C-01, `Biometría en portería` junto a C-05 y `Factor de corrección de pesaje por equipo y período` junto a C-08, cada uno unido a su componente por una línea discontinua y con la nota común `Excluido del Contrato · Art. 72.º BB.AA.`. Dibujarlas como cajas y no como texto al pie es deliberado: muestra que la arquitectura tiene el punto de extensión previsto, que es lo que declara el apartado 2.4.
 
@@ -1086,7 +1084,7 @@ International Society of Automation. (2013). *ANSI/ISA-95 — Enterprise-control
 
 International Organization for Standardization. (2018). *ISO 45001 — Occupational health and safety management systems*; *ISO 14001 — Environmental management systems*.
 
-Ley N.º 21.719 de 2024. Regula la protección y el tratamiento de los datos personales y crea la Agencia de Protección de Datos Personales. 13 de diciembre de 2024. Diario Oficial de la República de Chile. **Entra en vigencia el 1 de diciembre de 2026**, dentro del plazo de ejecución de este Contrato: las obligaciones que impone rigen desde la Etapa 1 y no se difieren.
+Ley N.º 21.719 de 2024. Regula la protección y el tratamiento de los datos personales y crea la Agencia de Protección de Datos Personales. 13 de diciembre de 2024. Diario Oficial de la República de Chile. **Entra en vigencia el 1 de diciembre de 2026**, esto es, antes del mes 1 del cronograma contractual, que SUP-21 sitúa no después de abril de 2027: la ley rige desde el primer día del Contrato, y ninguna de sus obligaciones se difiere ni admite régimen transitorio en este proyecto.
 
 Ley N.º 21.663 de 2024. Ley Marco de Ciberseguridad e Infraestructura Crítica de la Información. 8 de abril de 2024. Diario Oficial de la República de Chile.
 
@@ -1096,6 +1094,6 @@ Ley N.º 19.799 de 2002. Sobre documentos electrónicos, firma electrónica y se
 
 Decreto Supremo N.º 132 de 2002 [Ministerio de Minería]. Aprueba Reglamento de Seguridad Minera. 7 de febrero de 2004. Diario Oficial de la República de Chile.
 
-Parker, H. M. (2012). Reconciliation principles for the mining industry. *Mining Technology, 121*(3), 160-176. https://doi.org/10.1179/1743286312Y.0000000010
+Parker, H. M. (2012). Reconciliation principles for the mining industry. *Mining Technology, 121*(3), 160-176. https://doi.org/10.1179/1743286312Y.0000000007
 
 World Business Council for Sustainable Development y World Resources Institute. (2004). *The Greenhouse Gas Protocol: A corporate accounting and reporting standard* (ed. rev.). Base del cálculo de alcances 1, 2 y 3 que exige RN-26.

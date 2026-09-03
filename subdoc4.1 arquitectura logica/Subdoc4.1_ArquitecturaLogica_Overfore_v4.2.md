@@ -8,9 +8,9 @@
 | Contenido | a) Esquema de solución. b) Arquitectura lógica: capas, módulos, límites de contexto, responsabilidades e interfaces |
 | Ponderación | 16 % de la evaluación técnica (numeral 4.1 de la pauta) |
 | Documentos que rigen | Bases Administrativas FEP01.26 · Bases Técnicas Transversales FEP02.26 · Bases Técnicas del Caso 01, v1.0 del 18-08-2026 |
-| Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.5 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se verifica la trazabilidad del apartado 19. El T-12 v1.3 es consecuencia de este entregable y no insumo suyo |
-| Diagrama que acompaña | `Diagrama_ArquitecturaLogica_Overfore_v3.4` |
-| Versión | 4.1 — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorpora la revisión de verificación: cada código citado se contrastó contra el Formulario T-12, el catálogo v2.4, los registros de reglas y de supuestos y el texto de las Bases; se corrigieron las citas y los conteos del apartado 19, se completaron los requisitos que se declaraban acreditados sin desarrollarse en el cuerpo, y se retiró de los apartados 12.6, 15.7, 16.7 y 16.8 el detalle de producto y de implementación, que es materia del Subdocumento 4.2. |
+| Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.6 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se verifica el reparto del apartado 19. El **T-12 v1.3** es consecuencia de este entregable, no insumo suyo, y es donde cada código apunta a su apartado de esta versión 4.1 |
+| Diagrama que acompaña | `Diagrama_ArquitecturaLogica_Overfore_v3.5` |
+| Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y cinco códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
 
 ---
 
@@ -52,11 +52,25 @@ El diagrama que acompaña este texto se lee **de izquierda a derecha, en el orde
 
 `Actores` · `Borde y exposición` · `Presentación` · `Puerta operacional` · `Servicios de negocio` · `Integración y eventos` · `Sistemas del CLIENTE` · `Datos`
 
-Sobre ellas cruzan dos bandas horizontales, **Seguridad transversal** y **Observabilidad transversal**, dibujadas como bandas y no como cajas porque no viven en una columna: aplican a todas.
+Sobre ellas cruzan dos bandas horizontales, **Seguridad transversal** y **Observabilidad transversal**, rotuladas ambas con **C-22** porque son la forma en que la plataforma base se dibuja: no viven en una columna, aplican a todas.
+
+**Los seis colores de conector**, con su leyenda al pie:
+
+| Color | Qué recorre |
+|---|---|
+| Ámbar | Actores de terreno hacia C-03 |
+| Azul | Operación, planificación y oficina hacia las superficies internas |
+| Morado | Laboratorio, que entrega por su propio sistema y no por interfaz |
+| Verde | Actores externos: borde, puerta de exposición y portales |
+| Verde azulado | Bus de eventos, capa 5 |
+| Gris pizarra | Adaptador hacia sistema del CLIENTE |
+| Gris claro discontinuo | Frontera «Opera sin enlace · 48 h» |
+
+Que el verde de los actores externos y el verde azulado del bus sean colores distintos no es estética: es lo que permite comprobar de un vistazo la afirmación del apartado 6, según la cual **ninguna ruta externa toca el registro de terreno**.
 
 Tres detalles del dibujo que conviene tener presentes antes de leer el resto:
 
-1. Las columnas `Borde y exposición` y `Puerta de exposición` sólo están en la ruta de los **actores externos** —empresa contratista, comprador y autoridad—. Un viaje de camión no las atraviesa en ningún punto de su recorrido. Es una decisión, no una omisión, y el apartado 6 la explica.
+1. La columna `Borde y exposición` —que contiene la capa de borde y, bajo ella, la `Puerta de exposición`— sólo está en la ruta de los **actores externos** —empresa contratista, comprador y autoridad—. Un viaje de camión no las atraviesa en ningún punto de su recorrido. Es una decisión, no una omisión, y el apartado 6 la explica.
 2. Los marcos de trazo discontinuo rotulados **«Opera sin enlace · 48 h»** encierran C-03 en Presentación y C-04 más la caché de credenciales en Integración. Son la misma frontera dibujada en dos columnas.
 3. Tres componentes aparecen dos veces, rotulados `interfaz` y `lógica`: **C-16, C-19 y C-20**. No es un error de dibujo. El numeral 2.1 transversal prohíbe que la capa de presentación contenga lógica de negocio, de modo que la pantalla y el motor que la alimenta son piezas distintas del mismo componente y se despliegan por separado.
 
@@ -368,11 +382,11 @@ Los componentes lógicos son los mismos `C-01` a `C-22` del catálogo v2.4 y de 
 | **C-19** Analítica, indicadores y reportería | Calcula el indicador contra su definición versionada, sobre el almacén analítico separado | Presentación y Servicios | Analítico | 1 |
 | **C-20** Administración, parametrización y auditoría | Motor de vigencia temporal de parámetros, perfiles, catálogo de dispositivos, asiento de auditoría | Presentación y Servicios | Plataforma | 1 |
 | **C-21** Migración de datos históricos | Carga la ventana migrada y alimenta el repositorio de consulta histórica | Datos | Plataforma | 1, salvo mantenimiento y monitoreo ambiental |
-| **C-22** Plataforma base | Infraestructura, seguridad técnica, identidad técnica y observabilidad | Borde, Puerta, Seguridad y Observabilidad | Plataforma | 1 |
+| **C-22** Plataforma base | Infraestructura, seguridad técnica, identidad técnica y observabilidad, y el sustrato del bus de eventos | Borde, Puerta, Integración, Seguridad y Observabilidad | Plataforma | 1 |
 
 ### 8.1 Dos notas que evitan malas lecturas del diagrama
 
-**C-22 concentra 35 requerimientos** y es el componente más cargado del catálogo. No es un componente de negocio: es la **plataforma base**, y por eso aparece en cuatro capas. En el diagrama se representa por las bandas transversales y por las columnas de borde y de puerta, no como una caja de negocio.
+**C-22 concentra 35 requerimientos** y es el componente más cargado del catálogo. No es un componente de negocio: es la **plataforma base**, y por eso aparece en **cinco capas**: borde, puerta de enlace, integración —donde sostiene el bus de eventos, que no es un componente de negocio y por eso no lleva código propio—, seguridad y observabilidad. En el diagrama se representa por las dos bandas transversales, rotuladas con su código, y por las columnas de borde y de puerta, no como una caja de negocio.
 
 **C-16, C-19 y C-20 figuran a la vez en Presentación y en Servicios.** Es deliberado y responde a la exigencia del numeral 2.1 de que la capa de presentación no contenga lógica de negocio:
 
@@ -450,6 +464,16 @@ El RT-02.13 exige el modelo de dominio del negocio en este subdocumento, y exige
 | Historiador de proceso de planta | **Sólo lectura. Nunca se escribe en la red de control** | OPC UA con segregación conforme a IEC 62443 | Continua | C-14 |
 | Tres portales de telemetría de fabricante | Lectura de estado, posición, horómetro y alarmas | **Un adaptador por fabricante**, cada uno reemplazable | Latencia de ingesta declarada de 5 minutos (SUP-30) | C-13 |
 | Sistema de control de fatiga | Lectura de alertas emitidas | Adaptador; dato personal sensible, cifrado a nivel de campo | Continua | C-18 |
+
+**Los tres puntos de entrada de instrumentación, que no son sistemas de gestión.** El Capítulo 5 del caso lista, además de los siete anteriores, el sistema de pesaje de báscula de camiones y el control de acceso de portería, y el RT-17.06 los enumera entre los periféricos a integrar. No son sistemas de gestión con modelo propio, sino instrumentos que entregan una lectura, y por eso no llevan adaptador con capa anticorrupción sino un punto de captura:
+
+| Instrumento | Cómo entra la lectura | Por qué así | Componente |
+|---|---|---|---|
+| **Báscula de camiones**, en la salida del área de descarga y en el despacho a puerto | Punto de captura del nodo de borde del sitio, que lee el indicador de la báscula y publica el evento `PesajeCapturado` con identificador de origen | El caso admite reemplazar su software local; la lectura es un hecho de terreno y debe sobrevivir al corte de enlace igual que los demás. El umbral de 3 segundos del apartado 14.2 se mide aquí | C-04, publica a C-01 |
+| **Balanza de alimentación de planta**, fuente de verdad del tonelaje por la decisión n.º 2 | Lectura del historiador de proceso por OPC UA, sin escritura, como cualquier otra señal de planta | Es instrumentación de la planta y su señal ya vive en el historiador. Traerla por otra vía crearía una segunda lectura del mismo instrumento | C-14 |
+| **Torniquetes de portería** | Validación contra la caché local de credenciales del nodo de borde, con respuesta en 1,5 segundos sostenida durante un corte (RN-20) | El equipamiento se mantiene o se amplía; lo que se incorpora es la gestión de la acreditación, que es de C-05. La validación no puede depender del enlace | C-04 y C-05 |
+
+Las tres mediciones de tonelaje —pesaje de a bordo por C-10, báscula de camiones por C-04 e historiador por C-14— **se persisten tal como se generan y ninguna sobrescribe a otra** (RN-04). Es la condición del criterio n.º 3: sin las tres, la diferencia no se puede atribuir a un punto de medición.
 
 **Por qué los siete usan capa anticorrupción (RT-02.14).** No es sofisticación: el Capítulo 5 del caso declara que el CLIENTE **no tiene documentadas** las interfaces, las versiones ni las condiciones contractuales de acceso de sus propios sistemas. Un adaptador aislado permite descubrir la interfaz real en ejecución sin propagar el hallazgo al núcleo. Es también la mitigación del riesgo mayor de la propuesta: si un fabricante de telemetría no cede acceso programático, **cambia la fuente del dato y no el compromiso** (SUP-10, ADR-10).
 
@@ -609,7 +633,20 @@ El numeral 17.4 punto 10 del caso plantea dos preguntas: **qué crecimiento admi
 | 5 · Integración y eventos | El **bus de eventos** y los consumidores de ingesta, sostenidos por la plataforma base **C-22** | La **ventana de reconciliación posterior a un corte**, si el enlace se restablece dentro del cambio de turno: coinciden las 200 transacciones por segundo del peak en vivo con la descarga en paralelo de la cola acumulada de hasta cuatro sitios |
 | 4 · Servicios de negocio | El **motor de conciliación C-08** | La corrida del balance del mes, por el cálculo iterativo sobre el vector de elementos de RN-14 —cobre, oro, plata y arsénico— a lo largo de toda la cadena de lotes |
 
-**Volumen de la cola de reconciliación, derivado y declarado como supuesto.** Con 940 viajes diarios en la faena completa (numeral 14.1), 48 horas de corte acumulan del orden de 1.900 viajes; sumados sus pesajes, las sesiones de operador de dos relevos, las detenciones, las inspecciones y las lecturas de portería, el orden de magnitud de la cola es de **decenas de miles de eventos por sitio**. La cifra exacta se deriva en el cálculo de capacidad del RT-09.01 y se declara como supuesto verificable, porque el propio caso advierte que una cifra sin derivación está mal aunque acierte.
+**Volumen de la cola de reconciliación (SUP-40).** El numeral 14.2 del caso pide esta cifra con su método, y el método es prorratear la volumetría del numeral 14.1 a la ventana de 48 horas:
+
+| Hecho | Base anual del numeral 14.1 | En 48 horas | Eventos que genera |
+|---|---|---|---|
+| Viajes de camión de extracción | 342.000 | 1.874 | 3.748, con su pesaje asociado |
+| Ciclos de carguío de pala | 1,37 millones | 7.507 | 7.507 |
+| Ingresos y salidas de portería | ~2.900 diarios | 5.800 | 5.800 |
+| Sesiones de operador | ~120 equipos, 2 relevos al día | 480 | 960, apertura y cierre |
+| Muestras | ~71.000 | 389 | 389 |
+| Pozos de perforación | ~46.000 | 252 | 252 |
+| Inspecciones e incidentes | ~19.300 | 106 | 106 |
+| | | **Subtotal** | **~18.800** |
+
+Sumados los agregados de telemetría y de detención que el borde compacta antes de sincronizar, y un margen de diseño de 1,8 veces sobre el estimado, **el techo de diseño de la cola se declara en 35.000 eventos por sitio**. Si el supuesto resulta bajo, el impacto es tiempo de drenaje y no pérdida: la cola local es persistente y firmada, y el plazo de 4 horas del criterio n.º 13 tiene el margen del apartado 11.2. Se valida con el corte controlado de la marcha blanca.
 
 **Cómo se detecta.** Por los mismos mecanismos del apartado 14, no por umbrales de infraestructura aislados:
 
@@ -948,11 +985,23 @@ La razón es de alcance del criterio n.º 14: el compromiso de adopción se mide
 
 Accesibilidad conforme a **WCAG 2.2 nivel AA**, verificada con herramientas automatizadas y con pruebas manuales (RT-13.01), y navegación íntegra por teclado con orden de foco lógico en los componentes de oficina (RT-13.11).
 
-### 16.6 Acción desde la notificación (RT-16.26)
+### 16.6 Canales de notificación y acción desde el canal (RT-16.26)
 
-Se compromete **acotado**, porque la frontera entre notificar y capturar es la misma que separa un registro con valor probatorio de uno sin él.
+**Los canales.** El RT-16.26 exige al menos tres canales y el Capítulo 15 del caso fija cuáles, con un quinto que no es un canal de aplicación sino de faena:
 
-**Se compromete la acción desde el canal** en dos flujos, y en ambos la acción es una elección desde lista cerrada, no captura de texto libre:
+| Canal | A quién sirve | Qué lleva |
+|---|---|---|
+| Correo electrónico | Personal propio y empresas contratistas | Vencimientos, reportes y resúmenes de turno |
+| Notificación en la aplicación | Toda persona usuaria con sesión | Detención pendiente, lote retenido, evento en cuarentena |
+| Mensajería instantánea | Empresas contratistas | Acreditación y vencimiento de habilitación, porque el personal administrativo de empresas pequeñas no tiene correo corporativo |
+| Mensaje de texto | Destinatarios de alertas críticas y de seguridad | Alerta de fatiga, incidente y arsénico proyectado sobre el límite |
+| **Radio y megafonía de faena** | Toda la faena | **Alertas de evacuación.** No es un canal de la solución: la solución entrega el mensaje al sistema existente de radio y megafonía. La arquitectura no interpone ningún componente propio en la ruta de una evacuación, porque un canal de emergencia no puede depender de la disponibilidad de esta solución |
+
+Las plantillas son administrables y versionadas por el CLIENTE (RT-16.21), las preferencias de canal son configurables por persona salvo las que el CLIENTE declare obligatorias, y el envío es asíncrono, con reintento, control de duplicados y registro de entrega.
+
+**La acción desde el canal** se compromete **acotada**, porque la frontera entre notificar y capturar es la misma que separa un registro con valor probatorio de uno sin él.
+
+Se compromete en dos flujos, y en ambos la acción es una elección desde lista cerrada, no captura de texto libre:
 
 - **Vencimiento de habilitación**, dirigido a la empresa contratista y a la persona: permite adjuntar el documento de renovación y disparar el flujo de acreditación **sin entrar al portal**. Es la vía más corta hacia el criterio n.º 7.
 - **Detención pendiente de clasificar**, dirigido al supervisor: permite escoger la causa desde la **misma taxonomía cerrada de tres niveles**. No es una excepción a la regla: es la regla ejecutada por otro canal.
@@ -985,6 +1034,14 @@ El RT-13.08, con el valor que le fija el Capítulo 15 del caso, exige operación
 | Operación sin conexión | Resuelta en el apartado 11: registro local firmado, con estado de sincronización visible de forma permanente | Criterio n.º 13 |
 
 La ventana de tolerancia concreta frente al rebote táctil, como cualquier otro parámetro de interacción, es **parámetro de administración versionado de C-20** y no una constante de código, conforme a la regla que gobierna la capa 4.
+
+### 16.9 Búsqueda global (RT-16.27)
+
+El RT-16.27 exige búsqueda global con indexación de texto completo, tolerancia a errores de escritura, filtros facetados y respeto del control de acceso de la persona que busca. Las tres primeras propiedades son de producto y se cierran en el Subdocumento 4.2. Las dos decisiones que sí son de arquitectura lógica, y por eso se toman aquí:
+
+**El índice hereda la clasificación del dato, no la relaja.** La búsqueda se resuelve sobre un índice invertido separado de los almacenes operacionales, y cada documento indexado conserva su nivel del apartado 13.2 y su ámbito de rol, área y sitio. El filtrado por permiso ocurre **en la consulta al índice y no sobre el resultado**: un resultado que la persona no puede ver no llega a existir, de modo que ni el recuento de coincidencias ni las facetas filtran información por su sola forma.
+
+**Qué no se indexa, por decisión.** El atributo clasificado como personal sensible no entra al índice de texto completo en ningún caso —habilitación y su resultado, salud ocupacional, fatiga, alcohol y drogas, y el relato de incidente—, porque un índice invertido es, por construcción, una copia consultable del contenido y el cifrado a nivel de campo del RT-11.10 quedaría anulado por él. Esos registros se localizan por sus atributos estructurados y por su identificador, nunca por su contenido. La **ley por polígono** tampoco se indexa, por la misma razón aplicada al nivel confidencial: es la vía por la que saldría sin romper ningún control de acceso, que es justo el caso de detección declarado en el apartado 13.6.
 
 ---
 
@@ -1021,6 +1078,11 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 | n.º 13 | **48 horas sin enlace y sincronización en 4 horas**, desde marcha blanca | C-04, C-22, C-03 |
 | n.º 14 | **90 % de eventos registrados sin intervención del supervisor**, mes 15 | C-22, C-03, C-05, C-21 |
 
+**Sobre los criterios que se comprometen al mes 15 apoyados en componentes de Etapa 2.** Los criterios n.º 5 y n.º 9 se alcanzan al mes 15, dentro de la Etapa 1, y entre sus componentes figuran C-13 y C-18, que el apartado 8 sitúa mayoritariamente en Etapa 2. No es una contradicción, y se declara para que no se lea como tal:
+
+- **Criterio n.º 5**, clasificación de detenciones. Se sostiene al mes 15 con C-15 y C-10: la detección y la clasificación automática operan desde las señales que el despacho ya genera, y el apartado 11.4 declara que esa detección sigue funcionando incluso sin telemetría. C-13 enriquece la causa con la alarma del fabricante y llega en Etapa 2; su ausencia no impide clasificar el 100 %.
+- **Criterio n.º 9**, registros de seguridad nacidos digitales. Se sostiene al mes 15 con C-03, C-05 y C-20: el registro nace en terreno, firmado y con identificador de origen. De C-18, la inspección y el incidente son el requerimiento de Etapa 1 —el uno de seis que el apartado 8 deja fuera del «5 de 6»—; lo que llega en Etapa 2 es la gestión de alertas de fatiga, que es el criterio n.º 10 y se compromete al mes 21.
+
 **Cómo leer esta tabla frente a la matriz de trazabilidad.** El orden de cada fila es el del peso con que cada componente sostiene el criterio en la matriz v1.1, medido por número de requerimientos asociados. La tabla incluye además algún componente que la matriz no asocia formalmente pero sin el cual el compromiso no se sostiene —C-03 y C-04 en el criterio n.º 1, porque el dato que se reconstruye nace ahí—. **Donde la matriz y esta tabla difieran, la matriz manda para efectos de trazabilidad de requerimientos, y esta tabla explica el diseño.**
 
 ---
@@ -1033,11 +1095,13 @@ La hoja «Pendientes por grupo» del **Formulario T-12 v1.2** asignó a «Subdoc
 - **Uno**, **RT-03.24**, se parte entre este entregable y el 4.2: la calidad de servicio y la priorización de tráfico se declaran aquí; el estudio de cobertura del rajo, allá.
 - **Cuarenta y seis** se reasignan con fundamento, para que ninguno quede huérfano entre entregables.
 
-La tabla siguiente enumera además códigos que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. La reasignación completa se refleja en el Formulario T-12 v1.3.
+La tabla siguiente enumera **ochenta y tres** códigos: los cincuenta y uno anteriores más **treinta y dos** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, los ochenta y cinco códigos que este subdocumento sostiene —los ochenta y tres de la tabla, más RT-03.10 y RT-03.24 en su parte de aquí— apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
+
+**Sobre RT-09.01 y RT-09.02.** El cálculo de capacidad del RT-09.01 y la concurrencia del RT-09.02 se derivan aquí, en los apartados 12.1 y 12.6, a partir de la volumetría del numeral 14.1 y de SUP-31 y SUP-40. Lo que **no** se cierra aquí es el dimensionamiento de la infraestructura que sostiene esa carga —cantidad de instancias, tamaños y costo—, que es del Subdocumento 4.2 por el Artículo 16.º 2, y la ejecución de las pruebas de carga del RT-09.06, que es del Subdocumento 9.
 
 | Familia | Códigos acreditados aquí | Dónde |
 |---|---|---|
-| Arquitectura (RT-02) | RT-02.01 a RT-02.14 (incluida multi-tenencia hacia 2030 en RT-02.12) | Apartados 1, 4, 5, 7, 9, 10, 11, 12, 15 y 21 |
+| Arquitectura (RT-02) | RT-02.01 a RT-02.14. RT-02.12 —multi-tenencia hacia 2030— es uno de los treinta y dos extras: el T-12 v1.2 no lo había asignado aquí | Apartados 1, 4, 5, 7, 9, 10, 11, 12, 15 y 21 |
 | Continuidad y borde (RT-03) | RT-03.04, RT-03.07, RT-03.10, RT-03.13, RT-03.16, RT-03.18, RT-03.19, RT-03.24 (parcial) | Apartados 3, 5, 11, 13, 14 y 15 |
 | Construcción con impacto arquitectónico (RT-04) | RT-04.07, RT-04.08, RT-04.10 | Apartado 15 |
 | Integración (RT-05) | RT-05.05, RT-05.10, RT-05.16 a RT-05.19, RT-05.23, RT-05.29 | Apartados 5, 10, 12 y 14 |
@@ -1047,7 +1111,7 @@ La tabla siguiente enumera además códigos que el T-12 v1.2 no había asignado 
 | Experiencia (RT-13) | RT-13.01, RT-13.08 (ergonomía en rajo), RT-13.11, RT-13.12 | Apartado 16 |
 | Observabilidad (RT-14) | RT-14.01 a RT-14.04, RT-14.07 a RT-14.09 | Apartado 14 |
 | Sostenibilidad (RT-15) | RT-15.02, en sus dos lecturas | Apartado 15.8 |
-| Administración (RT-16) | RT-16.02, RT-16.03, RT-16.05, RT-16.10, RT-16.15, RT-16.26, RT-16.27, RT-16.29 | Apartados 5, 12, 14, 15 y 16 |
+| Administración (RT-16) | RT-16.02, RT-16.03, RT-16.05, RT-16.10, RT-16.15, RT-16.21, RT-16.26 (canales), RT-16.27 (búsqueda global), RT-16.29 | Apartados 5, 12, 14, 15 y 16 |
 | Canales (RT-17) | RT-17.02, RT-17.03, RT-17.07 (consumos de datos y batería), RT-17.08 | Apartado 16 |
 
 **Los cuarenta y seis reasignados** se reparten así: proveedor de nube, regiones, infraestructura como código, servicios administrados, endurecimiento, redundancia del enlace y ancho de banda por sitio van al **Subdocumento 4.2**, porque son decisiones de emplazamiento y dimensionamiento; ambientes, ramas, integración continua, cobertura de pruebas y métricas de entrega van a los **Subdocumentos 6 y 7**, porque son proceso de construcción y no estructura de la solución; ejecutar e informar las pruebas de carga va al **Subdocumento 9**.
@@ -1058,6 +1122,7 @@ La tabla siguiente enumera además códigos que el T-12 v1.2 no había asignado 
 
 | Qué falta | De quién | Por qué importa |
 |---|---|---|
+| Incorporación de **SUP-40** al Registro de supuestos | Registro de supuestos, v1.6 | El apartado 12.6 declara el techo de 35.000 eventos por sitio con su derivación. Mientras no esté en el registro, es una cifra sin instancia de validación declarada |
 | **Producto y versión concretos de cada componente** | Subdoc. 4.2 | El numeral 1.5 transversal advierte que declarar «Cumple» sin individualizar producto y versión equivale a no declarar, y la Comisión califica el requisito como **no acreditado**. Es el pendiente de mayor riesgo de puntaje que este subdocumento no puede cerrar solo |
 | Tabla de emplazamiento componente por componente, nube y faena | Subdoc. 4.2 | Exigida por el Artículo 16.º 2. Determina qué se sostiene en faena durante el corte de fibra |
 | Especificación de la sala técnica y de los cuatro gabinetes de borde | Subdoc. 4.2 | La sala actual de 40 m² no cumple el estándar del Capítulo 6 |

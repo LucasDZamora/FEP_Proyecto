@@ -10,7 +10,7 @@
 | Documentos que rigen | Bases Administrativas FEP01.26 · Bases Técnicas Transversales FEP02.26 · Bases Técnicas del Caso 01, v1.0 del 18-08-2026 |
 | Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.6 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se verifica el reparto del apartado 19. El **T-12 v1.3** es consecuencia de este entregable, no insumo suyo, y es donde cada código apunta a su apartado de esta versión 4.1 |
 | Diagrama que acompaña | `Diagrama_ArquitecturaLogica_Overfore_v3.5` |
-| Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y cuatro códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
+| Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y seis códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
 
 ---
 
@@ -1063,7 +1063,7 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 
 | Criterio | Qué se compromete | Componentes |
 |---|---|---|
-| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-10, C-07, C-03, C-04, C-22 |
+| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-10, C-03, C-04, C-22 |
 | n.º 2 | Conciliación cerrada en **no más de 3 días hábiles**, mes 19 | C-08, C-09, C-01, C-12 |
 | n.º 3 | Diferencia bajo **2 %** al mes 21, con **100 % atribuido a un punto de medición** | C-08, C-09, C-01 |
 | n.º 4 | Cumplimiento del plan al inicio del turno siguiente, contra la versión vigente | C-02, C-19, C-01, C-11 |
@@ -1095,16 +1095,17 @@ La hoja «Pendientes por grupo» del **Formulario T-12 v1.2** asignó a «Subdoc
 - **Uno**, **RT-03.24**, se parte entre este entregable y el 4.2: la calidad de servicio y la priorización de tráfico se declaran aquí; el estudio de cobertura del rajo, allá.
 - **Cuarenta y seis** se reasignan con fundamento, para que ninguno quede huérfano entre entregables.
 
-La tabla siguiente enumera **ochenta y cuatro** códigos: los cincuenta y uno anteriores —los cincuenta íntegros más RT-03.24 en su parte de aquí— y **treinta y tres** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, esos ochenta y cuatro apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
+La tabla siguiente enumera **ochenta y cuatro** códigos: los cincuenta y uno anteriores —los cincuenta íntegros más RT-03.24 en su parte de aquí— y **treinta y tres** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, esos ochenta y seis apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
 
 **Sobre RT-09.01 y RT-09.02.** El cálculo de capacidad del RT-09.01 y la concurrencia del RT-09.02 se derivan aquí, en los apartados 12.1 y 12.6, a partir de la volumetría del numeral 14.1 y de SUP-31 y SUP-40. Lo que **no** se cierra aquí es el dimensionamiento de la infraestructura que sostiene esa carga —cantidad de instancias, tamaños y costo—, que es del Subdocumento 4.2 por el Artículo 16.º 2, y la ejecución de las pruebas de carga del RT-09.06, que es del Subdocumento 9.
 
 | Familia | Códigos acreditados aquí | Dónde |
 |---|---|---|
-| Arquitectura (RT-02) | RT-02.01 a RT-02.14. RT-02.12 —multi-tenencia hacia 2030— es uno de los treinta y dos extras: el T-12 v1.2 no lo había asignado aquí | Apartados 1, 4, 5, 7, 9, 10, 11, 12, 15 y 21 |
-| Continuidad y borde (RT-03) | RT-03.04, RT-03.07, RT-03.10, RT-03.13, RT-03.16, RT-03.18, RT-03.19, RT-03.24 (parcial) | Apartados 3, 5, 11, 13, 14 y 15 |
+| Arquitectura (RT-02) | RT-02.01 a RT-02.14. RT-02.12 —multi-tenencia hacia 2030— es uno de los treinta y tres extras: el T-12 v1.2 no lo había asignado aquí | Apartados 1, 4, 5, 7, 9, 10, 11, 12, 15 y 21 |
+| Continuidad y borde (RT-03) | RT-03.04, RT-03.07, RT-03.10, RT-03.11 (registro local sin enlace), RT-03.13, RT-03.16, RT-03.18, RT-03.19, RT-03.24 (parcial) | Apartados 3, 5, 11, 13, 14 y 15 |
 | Construcción con impacto arquitectónico (RT-04) | RT-04.07, RT-04.08, RT-04.10 | Apartado 15 |
 | Integración (RT-05) | RT-05.05, RT-05.10, RT-05.16 a RT-05.19, RT-05.23, RT-05.29 | Apartados 5, 10, 12 y 14 |
+| Recinto técnico (RT-06) | RT-06.20 (biometría de acceso al recinto técnico de servidores) | Apartados 13.8 y 17 |
 | Desempeño (RT-09) | RT-09.01, RT-09.02, RT-09.03, RT-09.04, RT-09.05, RT-09.08 | Apartados 12 y 14 |
 | Seguridad (RT-11) | RT-11.01 a RT-11.03, RT-11.07 a RT-11.15, RT-11.25, RT-11.27 | Apartado 13 |
 | Identidad (RT-12) | RT-12.02, RT-12.03, RT-12.04, RT-12.07, RT-12.11, RT-12.12 | Apartados 5 y 13 |

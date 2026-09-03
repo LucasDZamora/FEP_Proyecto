@@ -10,7 +10,7 @@
 | Documentos que rigen | Bases Administrativas FEP01.26 · Bases Técnicas Transversales FEP02.26 · Bases Técnicas del Caso 01, v1.0 del 18-08-2026 |
 | Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.6 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se verifica el reparto del apartado 19. El **T-12 v1.3** es consecuencia de este entregable, no insumo suyo, y es donde cada código apunta a su apartado de esta versión 4.1 |
 | Diagrama que acompaña | `Diagrama_ArquitecturaLogica_Overfore_v3.5` |
-| Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y cinco códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
+| Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y cuatro códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
 
 ---
 
@@ -52,21 +52,21 @@ El diagrama que acompaña este texto se lee **de izquierda a derecha, en el orde
 
 `Actores` · `Borde y exposición` · `Presentación` · `Puerta operacional` · `Servicios de negocio` · `Integración y eventos` · `Sistemas del CLIENTE` · `Datos`
 
-Sobre ellas cruzan dos bandas horizontales, **Seguridad transversal** y **Observabilidad transversal**, rotuladas ambas con **C-22** porque son la forma en que la plataforma base se dibuja: no viven en una columna, aplican a todas.
+Sobre ellas cruzan dos bandas horizontales, **Seguridad transversal** y **Observabilidad transversal**. Son la forma en que la plataforma base **C-22** se dibuja: no viven en una columna, aplican a todas.
 
-**Los seis colores de conector**, con su leyenda al pie:
+**Las siete familias de conector**, cada una con su color en la leyenda al pie del diagrama:
 
-| Color | Qué recorre |
+| Familia | Qué recorre |
 |---|---|
-| Ámbar | Actores de terreno hacia C-03 |
-| Azul | Operación, planificación y oficina hacia las superficies internas |
-| Morado | Laboratorio, que entrega por su propio sistema y no por interfaz |
-| Verde | Actores externos: borde, puerta de exposición y portales |
-| Verde azulado | Bus de eventos, capa 5 |
-| Gris pizarra | Adaptador hacia sistema del CLIENTE |
-| Gris claro discontinuo | Frontera «Opera sin enlace · 48 h» |
+| Actores de terreno | Del grupo de actores de terreno hacia C-03 |
+| Operación, planificación y oficina | Del grupo de oficina hacia las superficies internas C-16, C-19 y C-20 |
+| Tercero que entrega dato por sistema | El laboratorio, que entrega por su propio sistema y no por interfaz |
+| Actores externos | Borde, puerta de exposición y portales autenticados |
+| Bus de eventos · capa 5 | Los diez servicios y los siete adaptadores contra el bus |
+| Ruta interna del sistema | Puerta operacional, persistencia y adaptador hacia sistema del CLIENTE |
+| Opera sin enlace · 48 h | Trazo discontinuo: la frontera del enclave de terreno |
 
-Que el verde de los actores externos y el verde azulado del bus sean colores distintos no es estética: es lo que permite comprobar de un vistazo la afirmación del apartado 6, según la cual **ninguna ruta externa toca el registro de terreno**.
+Que la familia de los actores externos y la del bus tengan color propio no es estética: es lo que permite comprobar de un vistazo la afirmación del apartado 6, según la cual **ninguna ruta externa toca el registro de terreno**.
 
 Tres detalles del dibujo que conviene tener presentes antes de leer el resto:
 
@@ -386,7 +386,7 @@ Los componentes lógicos son los mismos `C-01` a `C-22` del catálogo v2.4 y de 
 
 ### 8.1 Dos notas que evitan malas lecturas del diagrama
 
-**C-22 concentra 35 requerimientos** y es el componente más cargado del catálogo. No es un componente de negocio: es la **plataforma base**, y por eso aparece en **cinco capas**: borde, puerta de enlace, integración —donde sostiene el bus de eventos, que no es un componente de negocio y por eso no lleva código propio—, seguridad y observabilidad. En el diagrama se representa por las dos bandas transversales, rotuladas con su código, y por las columnas de borde y de puerta, no como una caja de negocio.
+**C-22 concentra 35 requerimientos** y es el componente más cargado del catálogo. No es un componente de negocio: es la **plataforma base**, y por eso aparece en **cinco capas**: borde, puerta de enlace, integración —donde sostiene el bus de eventos, que no es un componente de negocio y por eso no lleva código propio—, seguridad y observabilidad. En el diagrama se representa por las dos bandas transversales y por las columnas de borde y de puerta, no como una caja de negocio.
 
 **C-16, C-19 y C-20 figuran a la vez en Presentación y en Servicios.** Es deliberado y responde a la exigencia del numeral 2.1 de que la capa de presentación no contenga lógica de negocio:
 
@@ -646,7 +646,7 @@ El numeral 17.4 punto 10 del caso plantea dos preguntas: **qué crecimiento admi
 | Inspecciones e incidentes | ~19.300 | 106 | 106 |
 | | | **Subtotal** | **~18.800** |
 
-Sumados los agregados de telemetría y de detención que el borde compacta antes de sincronizar, y un margen de diseño de 1,8 veces sobre el estimado, **el techo de diseño de la cola se declara en 35.000 eventos por sitio**. Si el supuesto resulta bajo, el impacto es tiempo de drenaje y no pérdida: la cola local es persistente y firmada, y el plazo de 4 horas del criterio n.º 13 tiene el margen del apartado 11.2. Se valida con el corte controlado de la marcha blanca.
+Sumados los agregados de telemetría y de detención que el borde compacta antes de sincronizar, y un margen de diseño de 1,8 veces sobre el estimado, **el techo de diseño de la cola se declara en 35.000 eventos para la faena completa**, repartidos entre los cuatro nodos de borde según la actividad de cada sitio. La cifra es de faena y no por sitio, porque la volumetría del numeral 14.1 se entrega consolidada: el reparto por sitio se establece en la marcha blanca, y el nodo de portería y el de planta concentran la mayor parte. Si el supuesto resulta bajo, el impacto es tiempo de drenaje y no pérdida: la cola local es persistente y firmada, y el plazo de 4 horas del criterio n.º 13 tiene el margen del apartado 11.2. Se valida con el corte controlado de la marcha blanca.
 
 **Cómo se detecta.** Por los mismos mecanismos del apartado 14, no por umbrales de infraestructura aislados:
 
@@ -985,9 +985,9 @@ La razón es de alcance del criterio n.º 14: el compromiso de adopción se mide
 
 Accesibilidad conforme a **WCAG 2.2 nivel AA**, verificada con herramientas automatizadas y con pruebas manuales (RT-13.01), y navegación íntegra por teclado con orden de foco lógico en los componentes de oficina (RT-13.11).
 
-### 16.6 Canales de notificación y acción desde el canal (RT-16.26)
+### 16.6 Canales de notificación y acción desde el canal (RT-16.21, RT-16.26)
 
-**Los canales.** El RT-16.26 exige al menos tres canales y el Capítulo 15 del caso fija cuáles, con un quinto que no es un canal de aplicación sino de faena:
+**Los canales.** El Capítulo 15 del caso fija la lista, como valor del **RT-16.21**, y son cinco, con un quinto que no es un canal de aplicación sino de faena:
 
 | Canal | A quién sirve | Qué lleva |
 |---|---|---|
@@ -999,7 +999,7 @@ Accesibilidad conforme a **WCAG 2.2 nivel AA**, verificada con herramientas auto
 
 Las plantillas son administrables y versionadas por el CLIENTE (RT-16.21), las preferencias de canal son configurables por persona salvo las que el CLIENTE declare obligatorias, y el envío es asíncrono, con reintento, control de duplicados y registro de entrega.
 
-**La acción desde el canal** se compromete **acotada**, porque la frontera entre notificar y capturar es la misma que separa un registro con valor probatorio de uno sin él.
+**La acción desde el canal (RT-16.26).** El requisito es **deseable** —«se valorará»— y se refiere a canales conversacionales que permitan responder y ejecutar acciones desde el propio canal. Se compromete **acotado**, porque la frontera entre notificar y capturar es la misma que separa un registro con valor probatorio de uno sin él.
 
 Se compromete en dos flujos, y en ambos la acción es una elección desde lista cerrada, no captura de texto libre:
 
@@ -1063,7 +1063,7 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 
 | Criterio | Qué se compromete | Componentes |
 |---|---|---|
-| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-03, C-04, C-10, C-22 |
+| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-10, C-07, C-03, C-04, C-22 |
 | n.º 2 | Conciliación cerrada en **no más de 3 días hábiles**, mes 19 | C-08, C-09, C-01, C-12 |
 | n.º 3 | Diferencia bajo **2 %** al mes 21, con **100 % atribuido a un punto de medición** | C-08, C-09, C-01 |
 | n.º 4 | Cumplimiento del plan al inicio del turno siguiente, contra la versión vigente | C-02, C-19, C-01, C-11 |
@@ -1078,10 +1078,10 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 | n.º 13 | **48 horas sin enlace y sincronización en 4 horas**, desde marcha blanca | C-04, C-22, C-03 |
 | n.º 14 | **90 % de eventos registrados sin intervención del supervisor**, mes 15 | C-22, C-03, C-05, C-21 |
 
-**Sobre los criterios que se comprometen al mes 15 apoyados en componentes de Etapa 2.** Los criterios n.º 5 y n.º 9 se alcanzan al mes 15, dentro de la Etapa 1, y entre sus componentes figuran C-13 y C-18, que el apartado 8 sitúa mayoritariamente en Etapa 2. No es una contradicción, y se declara para que no se lea como tal:
+**Sobre los criterios que se comprometen al mes 15 apoyados en componentes de Etapa 2.** Los criterios n.º 5 y n.º 9 se alcanzan al mes 15, dentro de la Etapa 1, y entre los componentes que esta tabla les asocia figuran C-13 y C-18, que el apartado 8 sitúa mayoritariamente en Etapa 2. No es una contradicción, y conviene declararlo porque la matriz v1.1 es más estricta que esta tabla en ambos casos:
 
-- **Criterio n.º 5**, clasificación de detenciones. Se sostiene al mes 15 con C-15 y C-10: la detección y la clasificación automática operan desde las señales que el despacho ya genera, y el apartado 11.4 declara que esa detección sigue funcionando incluso sin telemetría. C-13 enriquece la causa con la alarma del fabricante y llega en Etapa 2; su ausencia no impide clasificar el 100 %.
-- **Criterio n.º 9**, registros de seguridad nacidos digitales. Se sostiene al mes 15 con C-03, C-05 y C-20: el registro nace en terreno, firmado y con identificador de origen. De C-18, la inspección y el incidente son el requerimiento de Etapa 1 —el uno de seis que el apartado 8 deja fuera del «5 de 6»—; lo que llega en Etapa 2 es la gestión de alertas de fatiga, que es el criterio n.º 10 y se compromete al mes 21.
+- **Criterio n.º 5**, clasificación de detenciones. La matriz lo asocia **sólo a C-15**, con sus diez requerimientos íntegramente en Etapa 1. Esta tabla agrega C-10, C-19 y C-13 porque sin ellos el compromiso no se explica: la detección y la clasificación automática operan desde las señales que el despacho ya genera, y el apartado 11.4 declara que esa detección sigue funcionando incluso sin telemetría. **C-13 enriquece la causa con la alarma del fabricante y llega en Etapa 2; su ausencia no impide clasificar el 100 %.**
+- **Criterio n.º 9**, registros de seguridad nacidos digitales. La matriz lo asocia a **C-20, C-05 y C-22, todos en Etapa 1**. Esta tabla agrega C-03 y C-18. El registro nace en terreno, firmado y con identificador de origen, y el requerimiento que lo habilita —registrar incidentes, cuasi accidentes, observaciones e inspecciones en el lugar del hecho— es de **Etapa 1 y la matriz lo sitúa en C-04**, no en C-18. De los seis requerimientos de C-18, el único de Etapa 1 es el **cifrado a nivel de campo de los datos de salud ocupacional, fatiga y alcohol y drogas**; lo que llega en Etapa 2 es la gestión de alertas de fatiga, que sostiene el criterio n.º 10 y se compromete al mes 21.
 
 **Cómo leer esta tabla frente a la matriz de trazabilidad.** El orden de cada fila es el del peso con que cada componente sostiene el criterio en la matriz v1.1, medido por número de requerimientos asociados. La tabla incluye además algún componente que la matriz no asocia formalmente pero sin el cual el compromiso no se sostiene —C-03 y C-04 en el criterio n.º 1, porque el dato que se reconstruye nace ahí—. **Donde la matriz y esta tabla difieran, la matriz manda para efectos de trazabilidad de requerimientos, y esta tabla explica el diseño.**
 
@@ -1095,7 +1095,7 @@ La hoja «Pendientes por grupo» del **Formulario T-12 v1.2** asignó a «Subdoc
 - **Uno**, **RT-03.24**, se parte entre este entregable y el 4.2: la calidad de servicio y la priorización de tráfico se declaran aquí; el estudio de cobertura del rajo, allá.
 - **Cuarenta y seis** se reasignan con fundamento, para que ninguno quede huérfano entre entregables.
 
-La tabla siguiente enumera **ochenta y tres** códigos: los cincuenta y uno anteriores más **treinta y dos** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, los ochenta y cinco códigos que este subdocumento sostiene —los ochenta y tres de la tabla, más RT-03.10 y RT-03.24 en su parte de aquí— apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
+La tabla siguiente enumera **ochenta y cuatro** códigos: los cincuenta y uno anteriores —los cincuenta íntegros más RT-03.24 en su parte de aquí— y **treinta y tres** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, esos ochenta y cuatro apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
 
 **Sobre RT-09.01 y RT-09.02.** El cálculo de capacidad del RT-09.01 y la concurrencia del RT-09.02 se derivan aquí, en los apartados 12.1 y 12.6, a partir de la volumetría del numeral 14.1 y de SUP-31 y SUP-40. Lo que **no** se cierra aquí es el dimensionamiento de la infraestructura que sostiene esa carga —cantidad de instancias, tamaños y costo—, que es del Subdocumento 4.2 por el Artículo 16.º 2, y la ejecución de las pruebas de carga del RT-09.06, que es del Subdocumento 9.
 

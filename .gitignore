@@ -3,3 +3,17 @@
 
 # Herramientas de asistentes de codigo
 .serena/
+
+# Clon accidental anidado: es una copia completa del mismo repositorio
+/Proyecto FEP - Equipo/
+
+# Borradores locales reemplazados por versiones consolidadas en sus carpetas
+/Subdocumento 1.docx
+/Subdocumento 4.2.docx
+
+# Archivos temporales del sistema y respaldos locales
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.bak

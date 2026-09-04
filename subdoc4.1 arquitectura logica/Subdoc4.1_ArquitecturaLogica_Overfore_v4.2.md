@@ -11,6 +11,7 @@
 | Insumos internos | Subdocumento 3 v1.4 · Catálogo de requerimientos v2.4 · Matriz de trazabilidad v1.1 · Registro de supuestos v1.6 · Registro de reglas de negocio v1.2 · **Formulario T-12 v1.2**, que es la versión contra la que se verifica el reparto del apartado 19. El **T-12 v1.3** es consecuencia de este entregable, no insumo suyo, y es donde cada código apunta a su apartado de esta versión 4.1 |
 | Diagrama que acompaña | `Diagrama_ArquitecturaLogica_Overfore_v3.5` |
 | Versión | **4.2** — 2 de septiembre de 2026. Las versiones 1.0 a 3.1 describían **cómo dibujar** el diagrama; desde la 4.0 el documento describe **qué es** la arquitectura, para que el CLIENTE pueda verificarla. La 4.1 incorporó la revisión de verificación de códigos. La **4.2** cierra los requisitos que se declaraban sin desarrollarse y repara la trazabilidad: canales de notificación y búsqueda global (apartados 16.6 y 16.9), puntos de entrada de báscula, balanza y portería (10.1), derivación del volumen de la cola de reconciliación (12.6, SUP-40), C-22 en sus cinco capas (8 y 8.1), aritmética del reparto de códigos (19) y la lectura de los criterios n.º 5 y n.º 9 frente a la Etapa 2 (18). En el Formulario T-12 v1.3, los ochenta y seis códigos que este subdocumento sostiene apuntan ahora a sus apartados de esta versión. |
+| Revisión de consistencia | 4 de septiembre de 2026, sobre la v4.2, sin cambio de versión. Corrige lo que la revisión cruzada del corpus detectó: el enlace entre faena y Antofagasta deja de declararse como punto único de falla de proveedor y pasa a declararse como trayecto físico compartido, conforme al doble carrier del Subdocumento 4.2 v1.1 (apartados 11 y 12.5); se corrige la aritmética del reparto de códigos, que decía ochenta y cuatro donde la tabla enumera ochenta y seis (apartado 19); se retira el pendiente de SUP-40, ya incorporado al Registro de supuestos v1.6, y se corrige el techo de la cola, que es de faena y no por sitio (apartado 20); se corrigen los componentes que la matriz v1.1 asocia a los criterios n.º 1, n.º 5 y n.º 9 (apartado 18); se anota la exclusión del Artículo 72.º en la etapa de C-01, C-05 y C-08 (apartado 8); se unifica la versión citada del Registro de supuestos en v1.6 (apartados 1.2 y 13.1); y se declaran veintiún actores, incorporando las dos poblaciones externas del RT-12.12 (apartado 6). |
 
 ---
 
@@ -39,7 +40,7 @@ Cada afirmación de diseño lleva su origen entre paréntesis. Las convenciones 
 - **RT-xx.xx** — requisito de las Bases Técnicas Transversales.
 - **RF-xxx-000** y **RNF-xxx-000** — requerimiento funcional o no funcional del catálogo v2.4.
 - **RN-00** — regla de negocio del registro v1.2.
-- **SUP-00** — supuesto del registro v1.5. Un supuesto es una afirmación que el PROPONENTE hace bajo su responsabilidad y somete a validación.
+- **SUP-00** — supuesto del registro v1.6. Un supuesto es una afirmación que el PROPONENTE hace bajo su responsabilidad y somete a validación.
 - **C-00** — componente lógico. Los veintidós son los mismos del catálogo y de la matriz.
 - **ADR-00** — decisión de arquitectura registrada, con su alternativa descartada. El índice está en el apartado 21 y el registro completo es entregable contractual (RT-02.04).
 - **Criterio n.º 0** — criterio de aceptación del Capítulo 18 del caso.
@@ -289,7 +290,7 @@ El apartado 13 desarrolla el resto de la vista de seguridad.
 
 ## 6. Cómo entra cada actor al sistema
 
-El diagrama agrupa los diecinueve actores en cuatro familias, cada una con su propio color de conector. La agrupación no es cosmética: **cada familia entra por una ruta distinta, y esa ruta es una decisión de arquitectura**.
+El diagrama agrupa los veintiún actores en cuatro familias, cada una con su propio color de conector. La agrupación no es cosmética: **cada familia entra por una ruta distinta, y esa ruta es una decisión de arquitectura**.
 
 | Familia | Quiénes | Por dónde entran | Por qué |
 |---|---|---|---|
@@ -299,6 +300,8 @@ El diagrama agrupa los diecinueve actores en cuatro familias, cada una con su pr
 | **Externos** | Empresa contratista, comprador, autoridad ambiental, y —conforme al RT-12.12— el operador del terminal portuario y los laboratorios externos | Capa de **borde y exposición**, luego **puerta de exposición**, y sólo entonces `C-06`, `C-07` o el acceso acotado que sirve `C-09` | Es la única superficie alcanzable desde Internet. Todo lo demás queda detrás |
 
 La lectura que el CLIENTE debe poder hacer del diagrama es ésta: **las dos bandas de exposición sólo tocan la ruta verde**. Ningún conector naranja ni azul las atraviesa. Ése es el aislamiento del que depende que el portal del comprador no sea una vía hacia la mina.
+
+**Nota sobre la lámina.** La familia de externos son cinco. El operador del terminal portuario y los laboratorios externos son población externa por decisión del RT-12.12 y tienen fila propia en la tabla de superficie de exposición del apartado 13.3, servida por `C-09` con visibilidad limitada a la información que su función requiere. El diagrama `Diagrama_ArquitecturaLogica_Overfore_v3.5` dibuja los otros diecinueve y debe incorporarlos en su próxima versión; su ruta de entrada es la misma de la familia externa y no altera ninguna otra afirmación de este apartado.
 
 ---
 
@@ -361,14 +364,14 @@ Los componentes lógicos son los mismos `C-01` a `C-22` del catálogo v2.4 y de 
 
 | Componente | Qué hace | Capa | Contexto | Etapa |
 |---|---|---|---|---|
-| **C-01** Núcleo de trazabilidad | Mantiene la cadena del mineral: viaje, stock, lote de chancado, lote comercial, con relación padre-hijo y proporción | Servicios | Mineral | 1 |
+| **C-01** Núcleo de trazabilidad | Mantiene la cadena del mineral: viaje, stock, lote de chancado, lote comercial, con relación padre-hijo y proporción | Servicios | Mineral | 1, salvo RF-STK-007 y RF-LOT-006 en 2 y RF-CAR-008 fuera del Contrato (Art. 72.º) |
 | **C-02** Plan minero versionado | Conserva cada versión del plan como entidad inmutable, contra la que se mide todo movimiento | Servicios | Mineral | 1 |
 | **C-03** Captura en terreno | Registra el hecho donde ocurre, con firma, identificador de origen y operación desconectada | Presentación | Terreno | 1, salvo índices de dureza de RF-PET-006 |
 | **C-04** Nodo de borde | Registro local, cola de eventos, caché de credenciales y sincronización por sitio | Integración | Terreno | 1 |
-| **C-05** Identidad y acreditación | Maestro único de personas, tres mecanismos de identidad, habilitaciones y control de acceso | Servicios y Seguridad | Personas | 1 |
+| **C-05** Identidad y acreditación | Maestro único de personas, tres mecanismos de identidad, habilitaciones y control de acceso | Servicios y Seguridad | Personas | 1, salvo RF-IDE-013 fuera del Contrato (Art. 72.º) |
 | **C-06** Portal de empresas contratistas | Administración delegada de identidades y documentación por cada empresa | Presentación | Personas | 1 |
 | **C-07** Portal de trazabilidad de lote | Certificado derivado para el comprador, filtrado según RN-16 | Presentación | Comercial | **2** (7 de 8 requerimientos) |
-| **C-08** Motor de conciliación | Balance metalúrgico con factores versionados; atribuye la diferencia a un punto de medición | Servicios | Mineral | 1 |
+| **C-08** Motor de conciliación | Balance metalúrgico con factores versionados; atribuye la diferencia a un punto de medición | Servicios | Mineral | 1, salvo RF-PES-006 fuera del Contrato (Art. 72.º) |
 | **C-09** Integración con laboratorio | Solicita análisis y recibe resultado validado. Bidireccional | Integración | Calidad | 1 |
 | **C-10** Integración con despacho de flota | Lee el ciclo mina: pala de origen, destino, tonelaje, posición y hora | Integración | Mineral | 1 |
 | **C-11** Integración con planificación minera | Lee la versión vigente del plan. **No** interviene el modelo de bloques | Integración | Mineral | 1 |
@@ -380,7 +383,7 @@ Los componentes lógicos son los mismos `C-01` a `C-22` del catálogo v2.4 y de 
 | **C-17** Ambiental, huella de carbono y comunidad | Compromisos de la RCA, huella con alcances 1, 2 y 3, cierre de faenas | Servicios | Cumplimiento | **2** (11 de 11) |
 | **C-18** Seguridad y salud ocupacional | Incidentes, inspecciones, gestión de alertas de fatiga | Servicios | Cumplimiento | **2** (5 de 6) |
 | **C-19** Analítica, indicadores y reportería | Calcula el indicador contra su definición versionada, sobre el almacén analítico separado | Presentación y Servicios | Analítico | 1 |
-| **C-20** Administración, parametrización y auditoría | Motor de vigencia temporal de parámetros, perfiles, catálogo de dispositivos, asiento de auditoría | Presentación y Servicios | Plataforma | 1 |
+| **C-20** Administración, parametrización y auditoría | Motor de vigencia temporal de parámetros, perfiles, catálogo de dispositivos, asiento de auditoría | Presentación y Servicios | Plataforma | 1, salvo RF-SSO-010 en 2 |
 | **C-21** Migración de datos históricos | Carga la ventana migrada y alimenta el repositorio de consulta histórica | Datos | Plataforma | 1, salvo mantenimiento y monitoreo ambiental |
 | **C-22** Plataforma base | Infraestructura, seguridad técnica, identidad técnica y observabilidad, y el sustrato del bus de eventos | Borde, Puerta, Integración, Seguridad y Observabilidad | Plataforma | 1 |
 
@@ -505,7 +508,9 @@ Los adaptadores que consumen servicios expuestos emplean **OAuth 2.1 con credenc
 
 Esta es la parte de la arquitectura que el caso condiciona más y la que el CLIENTE debería verificar primero.
 
-**El punto de partida.** El enlace de fibra tiene un único proveedor, con tres a seis cortes al año de cuatro a veinte horas. El respaldo satelital sostiene telefonía y correo, **no** la operación transaccional. La red inalámbrica del rajo tiene zonas de sombra permanentes que se degradan con el avance de la explotación. La restricción n.º 2 no admite excepciones.
+**El punto de partida.** El enlace de fibra que el CLIENTE tiene hoy es de un único proveedor, con tres a seis cortes al año de cuatro a veinte horas. El respaldo satelital sostiene telefonía y correo, **no** la operación transaccional. La red inalámbrica del rajo tiene zonas de sombra permanentes que se degradan con el avance de la explotación. La restricción n.º 2 no admite excepciones.
+
+**Qué cambia la oferta, y qué no.** El Subdocumento 4.2 incorpora un segundo carrier por sitio con conmutación automática, de modo que el enlace deja de depender de un proveedor único. Eso reduce la frecuencia esperada del corte; **no** cambia el diseño. La diversidad de ducto y de punto de entrada sólo queda probada al cerrar VAL-06, el rajo conserva sus zonas de sombra y el acopio de puerto sigue dependiendo de la conectividad de un tercero sin acuerdo de nivel de servicio. Todo lo que sigue en este apartado se sostiene sin suponer enlace disponible, que es lo que exige la restricción n.º 2.
 
 ### 11.1 Qué se ejecuta en el borde
 
@@ -611,7 +616,7 @@ El RT-02.11 exige declararlos y justificar por qué son aceptables, y advierte q
 
 | Punto único de falla | Por qué subsiste | Por qué es aceptable | Mitigación |
 |---|---|---|---|
-| Enlace de fibra de un único proveedor entre faena y Antofagasta | La construcción de la red no está en el alcance; el respaldo satelital no sostiene tráfico transaccional | **La arquitectura no depende de él.** Es la razón de ser del diseño desconectado: 48 horas de autonomía cubren el peor corte histórico registrado, de 20 horas | Nodos de borde en cuatro sitios; sincronización idempotente |
+| **Trayecto físico compartido** entre faena y Antofagasta | La oferta incorpora dos carriers por sitio, con proveedor, ducto y punto de entrada declarados distintos (Subdocumento 4.2, apartado 4 y 7; Formulario T-11, ítems T11-22 a T11-24), de modo que el proveedor único deja de serlo. Lo que subsiste es que la diversidad de trazado **no está probada**: contratos distintos no acreditan ductos distintos, y la construcción de la red no está en el alcance | **La arquitectura no depende del enlace.** Es la razón de ser del diseño desconectado: 48 horas de autonomía cubren el peor corte histórico registrado, de 20 horas, cualquiera sea la causa del corte | Doble carrier con conmutación automática; nodos de borde en cuatro sitios; sincronización idempotente. La diversidad física se verifica en VAL-06 del Subdocumento 4.2, y hasta entonces el trazado compartido se declara como riesgo residual |
 | Sistema de gestión de laboratorio del CLIENTE | Es sistema del CLIENTE, no se reemplaza | Su caída no detiene la operación: detiene la **liberación** de lotes, que es el comportamiento correcto y exigido por RN-11 | Cortacircuito en C-09; cola de solicitudes con reintento |
 | ERP corporativo como emisor contable único | Restricción n.º 4: no se crea una segunda verdad contable | Su indisponibilidad posterga la emisión contable, no el registro operacional | Cola persistente en C-12; ajuste de período anterior previsto por RN-05 |
 | Balanza de alimentación de planta como fuente de verdad del tonelaje | Es una decisión de negocio deliberada (SUP-02), no una limitación técnica | Las otras dos mediciones se siguen registrando durante su indisponibilidad; la conciliación se recalcula al recuperarla | Báscula de camiones como punto de calibración; las tres mediciones se conservan siempre |
@@ -684,7 +689,7 @@ El modelo tiene **una excepción, y la impone el caso**. Durante las 48 horas si
 
 **La propiedad que hace aceptable la excepción es que la verificación no se omite: se difiere y se repite.** Un evento admitido en terreno contra una credencial que el maestro central había revocado se reconcilia igualmente —el hecho ocurrió y RN-30 manda conservarlo— pero queda marcado, alertado y trazable hasta la aserción con que se admitió.
 
-**Limitación residual, declarada.** La caché de credenciales tiene vigencia máxima de **72 horas**, con margen sobre las 48 comprometidas, y se refresca en cada sincronización. Durante un corte prolongado una revocación no se propaga, de modo que el umbral de quince minutos de SUP-28 se mide sobre operación con enlace. Los controles compensatorios son tres: la persona cuya habilitación se revoca ya está físicamente dentro del recinto y el control de portería lo sabe; el nodo de borde deja de admitir la credencial al vencer la caché aunque no haya recuperado el enlace; y todo evento admitido en la ventana queda marcado en la reconciliación. Queda incorporado al Registro de supuestos v1.5 como **SUP-38**.
+**Limitación residual, declarada.** La caché de credenciales tiene vigencia máxima de **72 horas**, con margen sobre las 48 comprometidas, y se refresca en cada sincronización. Durante un corte prolongado una revocación no se propaga, de modo que el umbral de quince minutos de SUP-28 se mide sobre operación con enlace. Los controles compensatorios son tres: la persona cuya habilitación se revoca ya está físicamente dentro del recinto y el control de portería lo sabe; el nodo de borde deja de admitir la credencial al vencer la caché aunque no haya recuperado el enlace; y todo evento admitido en la ventana queda marcado en la reconciliación. Queda incorporado al Registro de supuestos v1.6 como **SUP-38**.
 
 ### 13.2 Clasificación de la información
 
@@ -1063,7 +1068,7 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 
 | Criterio | Qué se compromete | Componentes |
 |---|---|---|
-| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-10, C-03, C-04, C-22 |
+| n.º 1 | Origen de cualquier lote embarcado con evidencia en **menos de 2 horas**, mes 15 | C-01, C-09, C-10, C-07, C-22, C-03, C-04 |
 | n.º 2 | Conciliación cerrada en **no más de 3 días hábiles**, mes 19 | C-08, C-09, C-01, C-12 |
 | n.º 3 | Diferencia bajo **2 %** al mes 21, con **100 % atribuido a un punto de medición** | C-08, C-09, C-01 |
 | n.º 4 | Cumplimiento del plan al inicio del turno siguiente, contra la versión vigente | C-02, C-19, C-01, C-11 |
@@ -1078,12 +1083,13 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 | n.º 13 | **48 horas sin enlace y sincronización en 4 horas**, desde marcha blanca | C-04, C-22, C-03 |
 | n.º 14 | **90 % de eventos registrados sin intervención del supervisor**, mes 15 | C-22, C-03, C-05, C-21 |
 
-**Sobre los criterios que se comprometen al mes 15 apoyados en componentes de Etapa 2.** Los criterios n.º 5 y n.º 9 se alcanzan al mes 15, dentro de la Etapa 1, y entre los componentes que esta tabla les asocia figuran C-13 y C-18, que el apartado 8 sitúa mayoritariamente en Etapa 2. No es una contradicción, y conviene declararlo porque la matriz v1.1 es más estricta que esta tabla en ambos casos:
+**Sobre los criterios que se comprometen al mes 15 apoyados en componentes de Etapa 2.** Los criterios n.º 1, n.º 5 y n.º 9 se alcanzan al mes 15, dentro de la Etapa 1, y entre los componentes que esta tabla les asocia figuran C-07, C-13 y C-18, que el apartado 8 sitúa mayoritariamente en Etapa 2. No es una contradicción, y conviene declararlo:
 
-- **Criterio n.º 5**, clasificación de detenciones. La matriz lo asocia **sólo a C-15**, con sus diez requerimientos íntegramente en Etapa 1. Esta tabla agrega C-10, C-19 y C-13 porque sin ellos el compromiso no se explica: la detección y la clasificación automática operan desde las señales que el despacho ya genera, y el apartado 11.4 declara que esa detección sigue funcionando incluso sin telemetría. **C-13 enriquece la causa con la alarma del fabricante y llega en Etapa 2; su ausencia no impide clasificar el 100 %.**
-- **Criterio n.º 9**, registros de seguridad nacidos digitales. La matriz lo asocia a **C-20, C-05 y C-22, todos en Etapa 1**. Esta tabla agrega C-03 y C-18. El registro nace en terreno, firmado y con identificador de origen, y el requerimiento que lo habilita —registrar incidentes, cuasi accidentes, observaciones e inspecciones en el lugar del hecho— es de **Etapa 1 y la matriz lo sitúa en C-04**, no en C-18. De los seis requerimientos de C-18, el único de Etapa 1 es el **cifrado a nivel de campo de los datos de salud ocupacional, fatiga y alcohol y drogas**; lo que llega en Etapa 2 es la gestión de alertas de fatiga, que sostiene el criterio n.º 10 y se compromete al mes 21.
+- **Criterio n.º 1**, reconstrucción del origen de un lote embarcado. La matriz lo asocia a **C-01 (17 requerimientos), C-09 (11), C-10 (3), C-07 (3) y C-22 (2)**. C-07, el portal de trazabilidad de lote, llega en Etapa 2 y no condiciona el compromiso: lo que se mide al mes 15 es **reconstruir el origen con evidencia en menos de dos horas**, que se resuelve recorriendo el árbol de C-01; C-07 sólo agrega la vía por la que el comprador consulta ese mismo resultado. Esta tabla agrega además C-03 y C-04, que la matriz no asocia formalmente pero donde nace el dato que se reconstruye.
+- **Criterio n.º 5**, clasificación de detenciones. La matriz lo asocia a **C-15 (10 requerimientos) y C-19 (5)**, ambos íntegramente en Etapa 1. Esta tabla agrega C-10 y C-13 porque sin ellos el compromiso no se explica: la detección y la clasificación automática operan desde las señales que el despacho ya genera, y el apartado 11.4 declara que esa detección sigue funcionando incluso sin telemetría. **C-13 enriquece la causa con la alarma del fabricante y llega en Etapa 2; su ausencia no impide clasificar el 100 %.**
+- **Criterio n.º 9**, registros de seguridad nacidos digitales. La matriz lo asocia a **C-20 (14 requerimientos), C-05 (4), C-22 (2) y C-18 (1)**. De los seis requerimientos de C-18 el único de Etapa 1 es precisamente el que sostiene este criterio: el **cifrado a nivel de campo de los datos de salud ocupacional, fatiga y alcohol y drogas**; lo que llega en Etapa 2 es la gestión de alertas de fatiga, que sostiene el criterio n.º 10 y se compromete al mes 21. Esta tabla agrega C-03, donde el registro nace en terreno, firmado y con identificador de origen: el requerimiento que lo habilita —registrar incidentes, cuasi accidentes, observaciones e inspecciones en el lugar del hecho, RF-SSO-001— es de **Etapa 1 y la matriz lo sitúa en C-04**.
 
-**Cómo leer esta tabla frente a la matriz de trazabilidad.** El orden de cada fila es el del peso con que cada componente sostiene el criterio en la matriz v1.1, medido por número de requerimientos asociados. La tabla incluye además algún componente que la matriz no asocia formalmente pero sin el cual el compromiso no se sostiene —C-03 y C-04 en el criterio n.º 1, porque el dato que se reconstruye nace ahí—. **Donde la matriz y esta tabla difieran, la matriz manda para efectos de trazabilidad de requerimientos, y esta tabla explica el diseño.**
+**Cómo leer esta tabla frente a la matriz de trazabilidad.** El orden de cada fila es el del peso con que cada componente sostiene el criterio en la matriz v1.1, medido por número de requerimientos asociados; los componentes que la matriz no asocia formalmente van al final. **Donde la matriz y esta tabla difieran, la matriz manda para efectos de trazabilidad de requerimientos, y esta tabla explica el diseño.**
 
 ---
 
@@ -1091,11 +1097,11 @@ Esta tabla es la que el CLIENTE puede usar para auditar la arquitectura contra e
 
 La hoja «Pendientes por grupo» del **Formulario T-12 v1.2** asignó a «Subdoc. 4.1» **noventa y siete códigos**. Se reparten así, y la suma cierra:
 
-- **Cincuenta** se acreditan íntegramente en este subdocumento.
+- **Cincuenta y uno** se acreditan íntegramente en este subdocumento.
 - **Uno**, **RT-03.24**, se parte entre este entregable y el 4.2: la calidad de servicio y la priorización de tráfico se declaran aquí; el estudio de cobertura del rajo, allá.
-- **Cuarenta y seis** se reasignan con fundamento, para que ninguno quede huérfano entre entregables.
+- **Cuarenta y cinco** se reasignan con fundamento, para que ninguno quede huérfano entre entregables.
 
-La tabla siguiente enumera **ochenta y cuatro** códigos: los cincuenta y uno anteriores —los cincuenta íntegros más RT-03.24 en su parte de aquí— y **treinta y tres** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, esos ochenta y seis apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
+La tabla siguiente enumera **ochenta y seis** códigos: los cincuenta y dos anteriores —los cincuenta y uno íntegros más RT-03.24 en su parte de aquí— y **treinta y cuatro** que el T-12 v1.2 no había asignado a este subdocumento y que aquí quedan acreditados de todos modos, porque su decisión es de arquitectura lógica. En el **Formulario T-12 v1.3**, esos ochenta y seis apuntan a su apartado de esta versión 4.2, cumpliendo el punto 3 del numeral 1.5 transversal: no basta declarar «cumple», hay que señalar dónde se desarrolla.
 
 **Sobre RT-09.01 y RT-09.02.** El cálculo de capacidad del RT-09.01 y la concurrencia del RT-09.02 se derivan aquí, en los apartados 12.1 y 12.6, a partir de la volumetría del numeral 14.1 y de SUP-31 y SUP-40. Lo que **no** se cierra aquí es el dimensionamiento de la infraestructura que sostiene esa carga —cantidad de instancias, tamaños y costo—, que es del Subdocumento 4.2 por el Artículo 16.º 2, y la ejecución de las pruebas de carga del RT-09.06, que es del Subdocumento 9.
 
@@ -1123,14 +1129,10 @@ La tabla siguiente enumera **ochenta y cuatro** códigos: los cincuenta y uno an
 
 | Qué falta | De quién | Por qué importa |
 |---|---|---|
-| Incorporación de **SUP-40** al Registro de supuestos | Registro de supuestos, v1.6 | El apartado 12.6 declara el techo de 35.000 eventos por sitio con su derivación. Mientras no esté en el registro, es una cifra sin instancia de validación declarada |
-| **Producto y versión concretos de cada componente** | Subdoc. 4.2 | El numeral 1.5 transversal advierte que declarar «Cumple» sin individualizar producto y versión equivale a no declarar, y la Comisión califica el requisito como **no acreditado**. Es el pendiente de mayor riesgo de puntaje que este subdocumento no puede cerrar solo |
-| Tabla de emplazamiento componente por componente, nube y faena | Subdoc. 4.2 | Exigida por el Artículo 16.º 2. Determina qué se sostiene en faena durante el corte de fibra |
-| Especificación de la sala técnica y de los cuatro gabinetes de borde | Subdoc. 4.2 | La sala actual de 40 m² no cumple el estándar del Capítulo 6 |
-| Especificación del hardware de terreno | Subdoc. 4.2, Formulario T-11 | Referencia, cantidad y características por sitio (RT-08.10) |
-| Modelo de datos físico, linaje y catálogo | Subdoc. 5 | Debe soportar las entidades y eventos del apartado 9 |
 | Paquetes de la EDT | Informe 2 | Las 228 filas de la matriz de trazabilidad dicen «Se define en el Informe 2» |
-| Emplazamiento, producto y versión de los controles de seguridad y observabilidad | Subdoc. 4.2 | Este subdocumento decide el **modelo y los controles lógicos**; el producto y el emplazamiento son del 4.2 |
+| Ancho de banda y tiempo de conmutación del enlace de sitio | Subdoc. 4.2, VAL-06 | El apartado 12.5 declara el trayecto físico compartido como riesgo residual mientras no se acredite la diversidad de ducto y de punto de entrada |
+
+**Cerrados desde la emisión de la v4.2.** El techo de 35.000 eventos de la cola de reconciliación —que es **de faena completa y no por sitio**, conforme al apartado 12.6— quedó incorporado al Registro de supuestos v1.6 como **SUP-40**. El producto y la versión de cada componente, la tabla de emplazamiento del Artículo 16.º 2, la especificación de la sala técnica y de los cuatro gabinetes de borde, la del hardware de terreno y el emplazamiento de los controles de seguridad y observabilidad están en el **Subdocumento 4.2 v1.1** y en el **Formulario T-11 v1.0**; el modelo de datos físico y el catálogo, en el **Subdocumento 5 v2.1** y su anexo Diccionario de datos v2.1.
 
 **Consolidación antes de la entrega.** El equipo de este subdocumento verifica que los nombres de componente, los nombres de sitio y la lista de funciones degradadas del apartado 11.4 coincidan **literalmente** entre los Subdocumentos 3, 4.1, 4.2 y 5.
 
